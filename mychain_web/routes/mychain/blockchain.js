@@ -1,12 +1,16 @@
 const Block = require('./block');
 const Transaction = require('./transaction');
+const fs = require('file-system');
 
 class Blockchain {
     constructor() {
         this.difficulty = 2;
         this.miningReward = 100;
         this.chain = [new Block(0, Date.now(), [], 'genesisBlock')];
+        // 블록 생성 전 대기 중인 트랜잭션 배열
         this.pendingTransactions = [];
+        // 계정 정보 배열
+        this.accounts = [];
     }
 
     // 배열이기 때문에 반복하여 출력
@@ -48,6 +52,7 @@ class Blockchain {
             if (curBlock.curHash !== curBlock.calculateHash()) {
                 console.log('ERR001: "현재 블록 해시값 불일치"');
                 console.log('Block[' + i + ']');
+
                 validFlag = false;
             }
 
@@ -55,6 +60,7 @@ class Blockchain {
             if (curBlock.prevHash !== prevBlock.curHash) {
                 console.log('ERR002: "이전 블록 해시값 불일치"');
                 console.log('Block[' + i + ']');
+
                 validFlag = false;
             }
         }
@@ -136,6 +142,20 @@ class Blockchain {
 
         return txs;
     }
+
+    // loadKeyStore() {
+    //     if (fs.existsSync('./routes/mychain/keystore.json')) {
+    //         let rawData = fs.readFileSync('./routes/mychain/keystore.json');
+    //         let accountList = JSON.parse(rawData);
+    //
+    //         // keystore.json 파일의 계정 정보를 읽어서 accounts 배열에 저장
+    //         this.accounts = accountList;
+    //     }
+    // }
+    //
+    // saveKeyStore() {
+    //     fs.writeFileSync('./routes/mychain/keystore.json', this.accounts);
+    // }
 }
 
 module.exports = Blockchain;

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const EC = require('elliptic').ec;
-const Transaction = require('./myChain/transaction');
-const Blockchain = require('./myChain/blockchain');
+const Transaction = require('./mychain/transaction');
+const Blockchain = require('./mychain/blockchain');
 
 const ec = new EC('secp256k1');
 
@@ -64,7 +64,7 @@ router.get('/block/:idx', function (req, res, next) {
     const selectedIdx = req.params.idx;
 
     res.render('blockchain', {
-        title: 'Blockchain info',
+        title: 'myScan.io',
         blocks: myChain.chain,
         txs: myChain.chain[selectedIdx].transactions,
         selectedIdx: selectedIdx,
@@ -73,6 +73,7 @@ router.get('/block/:idx', function (req, res, next) {
 
 router.get('/createtx', function (req, res, next) {
     res.render('createtx', {
+        title: 'myScan.io',
         wallet: wallet1,
     });
 });
@@ -100,6 +101,7 @@ router.get('/pendingtransaction', function (req, res, next) {
     let txs = myChain.pendingTransactions;
 
     res.render('pendingtransaction', {
+        title: 'myScan.io',
         txs: txs,
     });
 });
@@ -119,13 +121,16 @@ router.get('/pendingtxs', function (req, res, next) {
     let txs = myChain.pendingTransactions;
 
     res.render('pendingtransaction', {
+        title: 'myScan.io',
         txs: txs,
     });
 });
 
 // 채굴 난이도, 보상 설정 화면 렌더링
 router.get('/settings', function (req, res, next) {
-    res.render('settings');
+    res.render('settings', {
+        title: 'myScan.io',
+    });
 });
 
 // 채굴 난이도, 보상 설정
@@ -145,6 +150,7 @@ router.post('/settings', function (req, res, next) {
 // 지갑 화면 렌더링
 router.get('/wallet', function (req, res, next) {
     res.render('wallet', {
+        title: 'myScan.io',
         txs: myChain.getAllTransactionOfWallet(wallet1),
         address: wallet1,
         balance: myChain.getBalance(wallet1),
@@ -153,15 +159,46 @@ router.get('/wallet', function (req, res, next) {
 
 // URL에 지갑주소를 입력했을 때의 지갑 화면 렌더링
 router.get('/wallet/:addr', function (req, res, next) {
-    const selectedWalletAddr = req.body.addr;
+    const selectedWalletAddr = req.params.addr;
 
     if (selectedWalletAddr) {
         res.render('wallet', {
+            title: 'myScan.io',
             txs: myChain.getAllTransactionOfWallet(selectedWalletAddr),
             address: selectedWalletAddr,
             balance: myChain.getBalance(selectedWalletAddr),
         });
     }
+});
+
+router.get('/createaccount', function (req, res, next) {
+    const newKey = ec.genKeyPair();
+    const newAccount = {
+        'privateKey': newKey.getPrivate('hex'),
+        'publicKey': newKey.getPublic('hex'),
+        'walletAddress': newKey.getPublic('hex'),
+    };
+
+    // myChain.saveKeyStore();
+    myChain.accounts.push(newAccount);
+
+    res.redirect('/blockchain/accountlist');
+});
+
+router.get('/accountlist', function (req, res, next) {
+    let accountList = myChain.accounts.map((el) => {
+       el.balance = myChain.getBalance(el.walletAddress);
+
+       return el;
+    });
+
+    // myChain.loadKeyStore();
+    console.log('accountList: ', accountList);
+
+    res.render('accountlist', {
+        title: 'myScan.io',
+        accounts: accountList,
+    });
 });
 
 module.exports = router;
