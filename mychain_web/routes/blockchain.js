@@ -115,4 +115,30 @@ router.get('/miningblock', function (req, res, next) {
     res.redirect('/blockchain');
 });
 
+router.get('/pendingtxs', function (req, res, next) {
+    let txs = myChain.pendingTransactions;
+
+    res.render('pendingtransaction', {
+        txs: txs,
+    });
+});
+
+router.get('/settings', function (req, res, next) {
+    res.render('settings');
+});
+
+// 채굴 난이도, 보상 설정
+router.post('/settings', function (req, res, next) {
+    const setDifficulty = req.body.setDifficulty;
+    const setReward = req.body.setReward;
+
+    console.log('setDifficulty: ' + setDifficulty);
+    console.log('setReward: ' + setReward);
+
+    myChain.difficulty = parseInt(setDifficulty);
+    myChain.miningReward = setReward;
+
+    res.redirect('/blockchain');
+});
+
 module.exports = router;

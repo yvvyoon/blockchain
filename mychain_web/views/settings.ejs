@@ -1,0 +1,18 @@
+<% layout('layout/layout') %>
+
+<div class="container">
+    <br><h1>Mining Settings</h1><br>
+    <form action="/blockchain/settings" method="post">
+        <div class="form-group">
+            <label for="setDifficulty">채굴 난이도 설정(Difficulty)</label>
+            <input type="text" class="form-control" id="setDifficulty" name="setDifficulty" value="">
+        </div>
+        <div class="form-group">
+            <label for="setReward">채굴 보상 설정(Reward)</label>
+            <input type="text" class="form-control" id="setReward" name="setReward" value="">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">설정</button>
+        </div>
+    </form>
+</div>

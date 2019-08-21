@@ -37,7 +37,7 @@ class Block {
             this.nonce++;
             this.curHash = this.calculateHash();
 
-            // console.log("Mining...", this.nonce, "...", this.curHash);
+            console.log("Mining...", this.nonce, "...", this.curHash);
         }
     }
 
