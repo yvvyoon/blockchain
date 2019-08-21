@@ -123,6 +123,7 @@ router.get('/pendingtxs', function (req, res, next) {
     });
 });
 
+// 채굴 난이도, 보상 설정 화면 렌더링
 router.get('/settings', function (req, res, next) {
     res.render('settings');
 });
@@ -139,6 +140,28 @@ router.post('/settings', function (req, res, next) {
     myChain.miningReward = setReward;
 
     res.redirect('/blockchain');
+});
+
+// 지갑 화면 렌더링
+router.get('/wallet', function (req, res, next) {
+    res.render('wallet', {
+        txs: myChain.getAllTransactionOfWallet(wallet1),
+        address: wallet1,
+        balance: myChain.getBalance(wallet1),
+    });
+});
+
+// URL에 지갑주소를 입력했을 때의 지갑 화면 렌더링
+router.get('/wallet/:addr', function (req, res, next) {
+    const selectedWalletAddr = req.body.addr;
+
+    if (selectedWalletAddr) {
+        res.render('wallet', {
+            txs: myChain.getAllTransactionOfWallet(selectedWalletAddr),
+            address: selectedWalletAddr,
+            balance: myChain.getBalance(selectedWalletAddr),
+        });
+    }
 });
 
 module.exports = router;
