@@ -1,0 +1,18 @@
+<% layout('layout/layout') %>
+
+<div class="container">
+    <br><h1>Mining Settings</h1><br>
+    <form action="/blockchain/settings" method="post">
+        <div class="form-group">
+            <label for="setDifficulty">Set difficulty</label>
+            <input type="text" class="form-control" id="setDifficulty" name="setDifficulty" value="">
+        </div>
+        <div class="form-group">
+            <label for="setReward">Set reward</label>
+            <input type="text" class="form-control" id="setReward" name="setReward" value="">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+    </form>
+</div>
