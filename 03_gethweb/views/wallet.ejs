@@ -1,0 +1,52 @@
+<% layout('layout/layout') %>
+
+<div class="container">
+    <br><h1>Wallet</h1><br>
+    <div>
+        <h3>Wallet Address:</h3>
+        <h8 style="color: gray"><%=address%></h8>
+    </div>
+    <br>
+    <div>
+        <h3>Balance:</h3>
+        <h8 style="color: gray"><%=balance%></h8>
+    </div>
+    <%
+        if (txs) {
+    %>
+    <br>
+    <h3>Transaction List:</h3>
+    <br>
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+            <th>Valid?</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            if (txs.forEach(function (el, idx) {
+        %>
+<!--        // 내 지갑 주소에만 스타일 적용-->
+        <% let fromAddressColor = (address !== null && address == el.fromAddress) ? 'blue' : ''; %>
+        <% let toAddressColor = (address !== null && address == el.toAddress) ? 'blue' : ''; %>
+        <tr>
+            <td><%=idx%></td>
+            <td class="text-truncate" style="max-width: 150px; color: <%=fromAddressColor%>"><%=el.fromAddress%></td>
+            <td class="text-truncate" style="max-width: 150px; color: <%=toAddressColor%>"><%=el.toAddress%></td>
+            <td class="text-truncate" style="max-width: 150px;"><%=el.amount%></td>
+            <td>✓</td>
+        </tr>
+        <%
+            }));
+        %>
+        </tbody>
+    </table>
+    <%
+        }
+    %>
+</div>

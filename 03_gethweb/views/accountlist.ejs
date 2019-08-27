@@ -1,0 +1,37 @@
+<% layout('layout/layout') %>
+
+<div class="container">
+    <br><h1>Account List</h1><br>
+    <%
+        if (accounts !== undefined) {
+    %>
+    <br>
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Address</th>
+            <th>Balance</th>
+            <th>Function</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            if (accounts.forEach(function (el, idx) {
+        %>
+        <tr>
+            <td><%=idx%></td>
+            <td class="text-truncate" style="max-width: 150px;"><%=el.walletAddress%></td>
+            <td class="text-truncate" style="max-width: 150px;"><%=el.balance%></td>
+            <td><a href="/eth/wallet/<%=el.walletAddress%>" class="btn btn-primary">Show details</a></td>
+        </tr>
+        <%
+            }));
+        %>
+        </tbody>
+    </table>
+    <%
+        }
+    %>
+    <a href="/eth/createaccount" class="btn btn-primary">Create account</a>
+</div>
