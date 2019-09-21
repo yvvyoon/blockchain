@@ -10,7 +10,7 @@
 
 <br>
 
-### Hyperledger Fabric 흐름
+### Fabric 흐름
 
 Fabric에서는 구성요소를 크게 세 부분으로 나눌 수 있는데 인증서(Certificate), Orderer, Peer가 바로 그것이다.
 
@@ -54,6 +54,8 @@ Fabric의 방식은 이와 다르다. 이 방식을 쓰는 이유에 대해 기�
 
 태깅을 사용하여 1 write + 1 read를 유지한다.
 
+<br>
+
 > *A	100(최초의 A는 100이다.)*
 >
 > ---
@@ -75,3 +77,64 @@ Fabric의 방식은 이와 다르다. 이 방식을 쓰는 이유에 대해 기�
 숫자를 제외한 A만으로 각 key들을 태깅하여 각 연산을 처리 후 최종적으로 A에 240이라는 value를 저장한다.
 
 이 특징으로 인해 내가 구축한 Fabric 체인의 성능이 좌우된다. (High Throughput Network)
+
+<br>
+
+시스템을 어떻게 구성하느냐에 따라 달라지겠지만 기본적인 뼈대는 아래와 같을 것 같다.
+
+<br>
+
+> *웹/앱 <--> 서버 <--> Fabric/Chaincode <--> Block Explorer*
+
+<br>
+
+### 각 컴포넌트의 역할
+
+1. Orderer
+   - 블록 생성 및 배포
+   - 채널 설정
+2. Peer
+   - 체인 데이터 보유
+   - 체인코드(스마트 컨트랙트) 실행
+3. User(Application)
+   - Peer와 트랜잭션(proposal) 송수신
+4. Ledger
+   - Blockchain + World State + Peer
+5. Chaincode
+   - Peer가 있는 컨테이너에 도커 컨테이너 인스턴스 형태로 올라가게 됨
+   - 체인코드 별로 각 컨테이너로 올라감
+6. CA, Fabric-ca
+   - 인증서 관리
+   - MSP(Membership Service Provider) 제공
+7. Organizations
+   - Identity를 관리하는 그룹을 규정
+8. Channel
+   - 동일한 Channel에 속한 Peer들은 동일한 Ledger와 체인코드를 공유할 수 있음
+   - 한 Peer가 여러 Channel에 가입할 수 있음
+
+<br>
+
+### Fabric 작동 순서
+
+1. 크립토 관련 작업
+   - Fabric-ca
+   - cryptogen으로 인증서 관련 구성요소를 generate
+2. Orderer 구동
+3. Peer 구동
+   - Peer = Chaincode + Block
+4. Kafka, Zookeeper 구동
+   - 각 컴포턴트 간의 작업과 흐름을 제어
+5. Channel 생성
+6. User 생성
+
+<br>
+
+Fabric에서 인증서는 X.509 형식이며 .pem 형식의 파일로 공개키를 관리한다.
+
+crypto-config 디렉토리에 ***ordererOrganizations, peerOrganizations*** 디렉토리가 있는데 이들 각각
+
+- keystore에 개인키
+- signcertsd에 개인키로 서명한 데이터가 들어 있는 인증서
+- cacerts에 ca 인증서, admin 인증서
+
+를 포함하고 있다.
